@@ -1,0 +1,30 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ec2-user
+
+hooks:
+  ApplicationStop:
+    - location: deregister_from_elb.sh
+      timeout: 180
+      runas: root
+    - location: server_stop.sh
+      timeout: 300
+      runas: root
+  BeforeInstall:
+    - location: install_dependencies.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: register_with_elb.sh
+      timeout: 180
+      runas: root
+    - location: server_start.sh
+      timeout: 300
+      runas: root
+  ValidateService:
+    - location: server_validate.sh
+      timeout: 300
+      runas: root
